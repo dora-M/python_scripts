@@ -7,6 +7,8 @@ os_release_file_path = '/etc/redhat-release'
 
 # Define a custom log level TRACE
 TRACE_LEVEL_NUM = 25
+# Log file
+LOG_FILE = 'file.log'
 
 
 def trace(self, message, *args, **kws):
@@ -30,10 +32,10 @@ logging.addLevelName(TRACE_LEVEL_NUM, "TRACE")
 
 def configure_logging():
     # Configure logging
-    logging.basicConfig(level=TRACE_LEVEL_NUM,
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         handlers=[
-                            logging.FileHandler("file.log"),
+                            logging.FileHandler(LOG_FILE),
                             logging.StreamHandler()
                         ])
 
@@ -83,7 +85,7 @@ def main():
 
     distro, version = get_os_release(os_release_file_path, logger)
     if version:
-        result = '{}{}'.format(distro, version)
+        result = '{} {}'.format(distro, version)
     else:
         result = distro
     logger.info('OS Release determined: {}'.format(result))
