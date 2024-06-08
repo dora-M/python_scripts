@@ -1,5 +1,4 @@
 # Import necessary modules
-import subprocess  # This module allows you to spawn new processes, connect to their input/output/error pipes, and obtain their return codes.
 import re  # This module provides support for regular expressions, which are used to search, match, and manipulate strings based on patterns
 
 def get_session_ids():
