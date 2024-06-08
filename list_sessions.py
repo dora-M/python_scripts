@@ -64,15 +64,15 @@ def get_session_details(session_id):
         logging.debug(message)
         output = result.stdout.strip()
         details = {
-            'Session ID': session_id,
+            'SessionID': session_id,
             'Since': re.search(r'Since:\s+(.+)', output).group(1),
             'Leader': re.search(r'Leader:\s+(\d+)', output).group(1),
             'Seat': re.search(r'Seat:\s+(.+)', output).group(1),
             'Display': re.search(r'Display:\s+(.+)', output).group(1),
             'Service': re.search(r'Service:\s+(.+)', output).group(1),
-            #'Desktop': re.search(r'Desktop:\s+(.+)', output).group(1),
+            'Desktop': re.search(r'Desktop:\s+(.+)', output).group(1),
             'State': re.search(r'State:\s+(.+)', output).group(1),
-            #'Idle': re.search(r'Idle:\s+(.+)', output).group(1),
+            'Idle': re.search(r'Idle:\s+(.+)', output).group(1),
             'Unit': re.search(r'Unit:\s+(\S+)', output).group(1),
         }
         message = f'Extracted details: {details}'
@@ -94,10 +94,23 @@ def get_session_details(session_id):
 
 def print_session_details(details):
     if details:
-        print(f"Session {details['Session ID']} details:")
+        print(f"Session {details['SessionID']} details:")
         for key, value in details.items():
             if key != 'Session ID':
                 print(f"  {key}: {value}")
+
+
+def it_is_lightdm_service(details):
+    session_id = details.get('SessionID', '')
+    service = details.get('Service', '')
+    if service == 'lightdm':
+        message = f'Session {session_id} is using the lightdm service.'
+        logging.info(message)
+        return True
+    else:
+        message = f'Session {session_id} is using the {service} service.'
+        logging.info(message)
+        return False
 
 
 def main():
@@ -105,12 +118,16 @@ def main():
     print("Starting main function...")
     session_ids = get_session_ids()
     if session_ids:
-        print("SESSION IDs:", session_ids)
+        message = f'SESSION IDs: {session_ids}.'
+        logging.debug(message)
+        logging.debug(f'==========================================================================================')
+        it_is_lightdm_service(details)
         for session_id in session_ids:
             details = get_session_details(session_id)
             print_session_details(details)
     else:
-        print("No session IDs found or an error occurred.")
+        message = f'No session IDs found or an error occurred.'
+        logging.debug(message)
 
 
 if __name__ == "__main__":
