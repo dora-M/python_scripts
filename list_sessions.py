@@ -75,7 +75,7 @@ def get_session_details(session_id):
             #'Idle': re.search(r'Idle:\s+(.+)', output).group(1),
             'Unit': re.search(r'Unit:\s+(\S+)', output).group(1),
         }
-        message = f'xtracted details: {details}'
+        message = f'Extracted details: {details}'
         logging.debug(message)
         return details
     except subprocess.CalledProcessError as e:
