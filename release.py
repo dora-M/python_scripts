@@ -1,5 +1,4 @@
 import logging
-import sys
 import re
 
 # Path to the OS release file
@@ -40,7 +39,7 @@ def configure_logging():
                         ])
 
 
-def get_os_release(file_path, logger):
+def get_distribution(file_path, logger):
     try:
         with open(file_path, 'r') as file:
             # Read the first line from the file
@@ -53,24 +52,23 @@ def get_os_release(file_path, logger):
                 distro = match.group(1)
                 version = match.group(2)
                 logger.debug('Distribution: {}, Version: {}'.format(distro, version))
-                return distro, version
+                return distro
             else:
-                error_message = 'Unknown OS release format'
-                logger.error(error_message)
-                print(error_message, file=sys.stderr)
-                return error_message, None
+                logger.error('Unrecognized OS release format found in file: {}. Content: "{}"'.format(file_path, line))
+                return 'Unknown'
 
     except FileNotFoundError:
-        error_message = 'File not found: {}'.format(file_path)
-        logger.error(error_message)
-        print(error_message, file=sys.stderr)
-        return error_message, None
+        logger.error('File not found: {}'.format(file_path))
+        return 'Unknown'
 
-    except Exception as e:
-        error_message = 'An error occurred: {}'.format(e)
-        logger.error(error_message)
-        print(error_message, file=sys.stderr)
-        return error_message, None
+    except Exception as error_distribution:
+        logger.error('An error occurred: {}'.format(error_distribution))
+        return 'Unknown'
+
+
+def next_func(distribution, logger):
+    # Placeholder for the next function that uses the distribution variable
+    logger.info('OS Release determined: {}'.format(distribution))
 
 
 def main():
@@ -79,18 +77,16 @@ def main():
     # Create logger
     logger = logging.getLogger(__name__)
 
-    # Log messages
-    logger.error("This is my error message")
-    logger.trace("This is my trace message")
-
-    distro, version = get_os_release(os_release_file_path, logger)
-    if version:
-        result = '{} {}'.format(distro, version)
+    distribution = get_distribution(os_release_file_path, logger)
+    if distribution in ['CentOS', 'Rocky']:
+        next_func(distribution, logger)
     else:
-        result = distro
-    logger.info('OS Release determined: {}'.format(result))
-    print(result)
+        logger.warning('Unsupported distribution: {}'.format(distribution))
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+        logging.error('This is an line to be deleted: xxxxxxxxxxxxxxxxxxxx')
+    except Exception as unexpected_error:
+        logging.error('An unexpected error occurred: {}'.format(unexpected_error))
