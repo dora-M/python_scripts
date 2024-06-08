@@ -6,6 +6,12 @@ log_file = "dnf_clean.log"
 
 def configure_logging():
     """
+Configures the logging settings for the application.
+The format specifies how the log messages will be structured:
+    %(asctime)s: Timestamp of the log entry.
+    %(levelname)s: The log level (e.g., INFO, ERROR).
+    %(message)s: The actual log message content.
+    
 Logging Levels:
 logging.NOTSET    0 When set on a logger, indicates that ancestor loggers are to be consulted to determine the 
                     effective level. If that still resolves to NOTSET, then all events are logged. When set on a
