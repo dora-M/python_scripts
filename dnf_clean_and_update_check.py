@@ -6,12 +6,6 @@ log_file = "dnf_clean.log"
 
 def configure_logging():
     """
-Configures the logging settings for the application.
-The format specifies how the log messages will be structured:
-    %(asctime)s: Timestamp of the log entry.
-    %(levelname)s: The log level (e.g., INFO, ERROR).
-    %(message)s: The actual log message content.
-    
 Logging Levels:
 logging.NOTSET    0 When set on a logger, indicates that ancestor loggers are to be consulted to determine the 
                     effective level. If that still resolves to NOTSET, then all events are logged. When set on a
@@ -70,9 +64,8 @@ def run_dnf_clean():
         logging.error(error_message)
     except Exception as e:
         # Handle any exceptions that occur during the subprocess run
-        error_message = f'dnf clean all: An error occurred while running dnf clean.'
+        error_message = f'dnf clean all: An error occurred while running dnf clean: {e.stderr.strip()}'
         logging.critical(error_message)
-        logging.critical(str(e))
 
 
 def remove_all_dnf_cache():
@@ -136,9 +129,8 @@ def are_updates_available():
         logging.error(error_message)
     except Exception as e:
         # Handle any exceptions that occur during the subprocess run
-        error_message = f'dnf check-update: An error occurred while checking for updates.'
+        error_message = f'dnf check-update: An error occurred while checking for updates: {e.stderr.strip()}'
         logging.critical(error_message)
-        logging.critical(str(e))
     finally:
         return False
 
