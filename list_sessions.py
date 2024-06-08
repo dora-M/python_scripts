@@ -70,9 +70,9 @@ def get_session_details(session_id):
             'Seat': re.search(r'Seat:\s+(.+)', output).group(1),
             'Display': re.search(r'Display:\s+(.+)', output).group(1),
             'Service': re.search(r'Service:\s+(.+)', output).group(1),
-            'Desktop': re.search(r'Desktop:\s+(.+)', output).group(1),
+            #'Desktop': re.search(r'Desktop:\s+(.+)', output).group(1),
             'State': re.search(r'State:\s+(.+)', output).group(1),
-            'Idle': re.search(r'Idle:\s+(.+)', output).group(1),
+            #'Idle': re.search(r'Idle:\s+(.+)', output).group(1),
             'Unit': re.search(r'Unit:\s+(\S+)', output).group(1),
         }
         message = f'xtracted details: {details}'
