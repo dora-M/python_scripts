@@ -66,12 +66,20 @@ def run_dnf_clean():
             logging.error(message)
     except subprocess.CalledProcessError as e:
         # Print any error that occurs during the subprocess call
-        error_message = f'dnf clean all: An error occurred while dnf clean call: {e.stderr.strip()}'
-        logging.error(error_message)
+        message = f'dnf clean all: An error occurred while dnf clean call: {e.stderr.strip()}'
+        logging.error(message)
+    except subprocess.TimeoutExpired as e:
+        # Handle timeout exception
+        message = f'dnf clean all: The command timed out: {e.stderr.strip() if e.stderr else "No stderr"}'
+        logging.error(message)
+    except subprocess.SubprocessError as e:
+        # Handle other subprocess errors
+        message = f'dnf clean all: A subprocess error occurred: {str(e)}'
+        logging.error(message)
     except Exception as e:
-        # Handle any exceptions that occur during the subprocess run
-        error_message = f'dnf clean all: An error occurred while running dnf clean: {e.stderr.strip()}'
-        logging.critical(error_message)
+        # Handle any other exceptions that occur during the subprocess run
+        message = f'dnf clean all: An error occurred while running dnf clean: {str(e)}'
+        logging.critical(message)
 
 
 def remove_all_dnf_cache():
@@ -128,15 +136,23 @@ def are_updates_available():
             message = (f'dnf check-update: Unexpected return code: {result.returncode}'
                        f'\nSTDOUT: {stdout_message}'
                        f'\nSTDERR: {stderr_message}')
-            logging.error(message)
+            logging.error(message)       
     except subprocess.CalledProcessError as e:
         # Print any error that occurs during the subprocess call
-        error_message = f'dnf check-update: An error occurred while checking for updates call: {e.stderr.strip()}'
-        logging.error(error_message)
+        message = f'dnf check-update: An error occurred while checking for updates call: {e.stderr.strip()}'
+        logging.error(message)
+    except subprocess.TimeoutExpired as e:
+        # Handle timeout exception
+        message = f'dnf check-update: The command timed out: {e.stderr.strip() if e.stderr else "No stderr"}'
+        logging.error(message)
+    except subprocess.SubprocessError as e:
+        # Handle other subprocess errors
+        message = f'dnf check-update: A subprocess error occurred: {str(e)}'
+        logging.error(message)
     except Exception as e:
-        # Handle any exceptions that occur during the subprocess run
-        error_message = f'dnf check-update: An error occurred while checking for updates: {e.stderr.strip()}'
-        logging.critical(error_message)
+        # Handle any other exceptions that occur during the subprocess run
+        message = f'dnf check-update: An error occurred while checking for updates: {str(e)}'
+        logging.critical(message)
     finally:
         return False
 
