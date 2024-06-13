@@ -13,7 +13,7 @@ The format specifies how the log messages will be structured:
     %(message)s: The actual log message content
 
 Logging Levels:
-logging.NOTSET    0 When set on a logger, indicates that ancestor loggers are to be consulted to determine the 
+logging.NOTSET    0 When set on a logger, indicates that ancestor loggers are to be consulted to determine the
                     effective level. If that still resolves to NOTSET, then all events are logged. When set on a
                     handler, all events are handled.
 logging.DEBUG    10 Detailed information, typically only of interest to a developer trying to diagnose a problem.
@@ -89,11 +89,20 @@ def remove_all_dnf_cache():
     """
     try:
         subprocess.run(["rm", "-rf", "/var/cache/dnf/*"], check=True)
-        logging.info("Successfully removed all files in /var/cache/dnf")
+        message = f'dnf clear cache: Successfully removed all files in /var/cache/dnf")'
+        logging.info(message)
     except subprocess.CalledProcessError as e:
-        logging.error(f"Failed to remove files: {e}")
+        message = f'dnf clear cache: Failed to remove files: {e.stderr.strip() if e.stderr else str(e)}'
+        logging.error(message)
+    except subprocess.TimeoutExpired as e:
+        message = f"dnf clear cache: Command timed out: {e.stderr.strip() if e.stderr else 'No stderr'}"
+        logging.error(message)
+    except subprocess.SubprocessError as e:
+        message = f'dnf clear cache: A subprocess error occurred: {str(e)}'
+        logging.error(message)
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
+        message = f'dnf clear cache: An unexpected error occurred: {str(e)}'
+        logging.critical(message)
 
 
 def are_updates_available():
@@ -136,7 +145,7 @@ def are_updates_available():
             message = (f'dnf check-update: Unexpected return code: {result.returncode}'
                        f'\nSTDOUT: {stdout_message}'
                        f'\nSTDERR: {stderr_message}')
-            logging.error(message)       
+            logging.error(message)
     except subprocess.CalledProcessError as e:
         # Print any error that occurs during the subprocess call
         message = f'dnf check-update: An error occurred while checking for updates call: {e.stderr.strip()}'
